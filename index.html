@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Password Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            margin: 5px 0;
+            padding: 10px;
+            width: 100%;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #e0e0e0;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Random Password Generator</h1>
+        <form id="passwordForm">
+            <input type="number" id="numofpwds" name="numofpwds" placeholder="Number of Passwords" required>
+            <input type="number" id="pwdlen" name="pwdlen" placeholder="Length of Passwords" required>
+            <button type="submit">Generate</button>
+        </form>
+        <ul id="passwordList"></ul>
+    </div>
+    <script>
+        document.getElementById('passwordForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const numofpwds = document.getElementById('numofpwds').value;
+            const pwdlen = document.getElementById('pwdlen').value;
+
+            fetch('/generate_passwords', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `numofpwds=${numofpwds}&pwdlen=${pwdlen}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const passwordList = document.getElementById('passwordList');
+                passwordList.innerHTML = '';
+                data.forEach(pwd => {
+                    const li = document.createElement('li');
+                    li.textContent = pwd;
+                    passwordList.appendChild(li);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
